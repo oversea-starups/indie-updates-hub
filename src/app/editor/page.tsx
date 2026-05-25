@@ -1,20 +1,63 @@
 'use client'
 
 import { useState, useCallback } from 'react'
-import { ArrowLeft, Copy, Check, Twitter, Eye, Sparkles } from 'lucide-react'
+import { ArrowLeft, Copy, Check, Twitter, Eye, Sparkles, Send, Hash, MessageCircle, Mail, Newspaper } from 'lucide-react'
 import Link from 'next/link'
 
+function escapeHtml(text: string): string {
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+}
+
 function markdownToHtml(md: string): string {
-  return md
-    .replace(/^### (.*$)/gim, '<h3 class="text-lg font-semibold mt-4 mb-2">$1</h3>')
-    .replace(/^## (.*$)/gim, '<h2 class="text-xl font-semibold mt-5 mb-3">$1</h2>')
-    .replace(/^# (.*$)/gim, '<h1 class="text-2xl font-bold mb-4">$1</h1>')
-    .replace(/\*\*(.*?)\*\*/gim, '<strong>$1</strong>')
-    .replace(/\*(.*?)\*/gim, '<em>$1</em>')
-    .replace(/`([^`]+)`/gim, '<code class="bg-neutral-800 px-1.5 py-0.5 rounded text-sky-400 text-sm">$1</code>')
-    .replace(/^\> (.*$)/gim, '<blockquote class="border-l-2 border-sky-500 pl-3 my-3 italic">$1</blockquote>')
-    .replace(/^\- (.*$)/gim, '<li class="ml-4">$1</li>')
-    .replace(/^(?!<[hlu]|\s*$)(.*$)/gim, '<p class="mb-3 leading-relaxed">$1</p>')
+  const lines = md.split('\n')
+  const result: string[] = []
+  let inList = false
+
+  for (const line of lines) {
+    const trimmed = line.trim()
+
+    if (trimmed.startsWith('- ') || trimmed.startsWith('* ')) {
+      if (!inList) {
+        result.push('<ul class="list-disc ml-6 mb-3 space-y-1">')
+        inList = true
+      }
+      const item = escapeHtml(trimmed.slice(2))
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*(.*?)\*/g, '<em>$1</em>')
+        .replace(/`([^`]+)`/g, '<code class="bg-neutral-800 px-1.5 py-0.5 rounded text-sky-400 text-sm">$1</code>')
+      result.push(`<li>${item}</li>`)
+    } else {
+      if (inList) {
+        result.push('</ul>')
+        inList = false
+      }
+
+      if (trimmed === '') {
+        result.push('')
+      } else if (trimmed.startsWith('### ')) {
+        result.push(`<h3 class="text-lg font-semibold mt-4 mb-2">${escapeHtml(trimmed.slice(4)).replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}</h3>`)
+      } else if (trimmed.startsWith('## ')) {
+        result.push(`<h2 class="text-xl font-semibold mt-5 mb-3">${escapeHtml(trimmed.slice(3)).replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}</h2>`)
+      } else if (trimmed.startsWith('# ')) {
+        result.push(`<h1 class="text-2xl font-bold mb-4">${escapeHtml(trimmed.slice(2)).replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}</h1>`)
+      } else if (trimmed.startsWith('> ')) {
+        result.push(`<blockquote class="border-l-2 border-sky-500 pl-3 my-3 italic">${escapeHtml(trimmed.slice(2)).replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}</blockquote>`)
+      } else {
+        let p = escapeHtml(trimmed)
+          .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+          .replace(/\*(.*?)\*/g, '<em>$1</em>')
+          .replace(/`([^`]+)`/g, '<code class="bg-neutral-800 px-1.5 py-0.5 rounded text-sky-400 text-sm">$1</code>')
+        result.push(`<p class="mb-3 leading-relaxed">${p}</p>`)
+      }
+    }
+  }
+
+  if (inList) result.push('</ul>')
+
+  return result.join('\n')
 }
 
 function generateXThread(md: string, title: string): string[] {
@@ -34,6 +77,20 @@ function generateXThread(md: string, title: string): string[] {
   return tweets
 }
 
+const channels = [
+  { key: 'changelog', label: 'Changelog', icon: <Sparkles className="w-3.5 h-3.5" />, color: 'text-sky-400' },
+  { key: 'twitter', label: 'X / Twitter', icon: <Twitter className="w-3.5 h-3.5" />, color: 'text-sky-400' },
+  { key: 'discord', label: 'Discord', icon: <MessageCircle className="w-3.5 h-3.5" />, color: 'text-indigo-400' },
+  { key: 'slack', label: 'Slack', icon: <Hash className="w-3.5 h-3.5" />, color: 'text-amber-400' },
+  { key: 'newsletter', label: 'Newsletter', icon: <Mail className="w-3.5 h-3.5" />, color: 'text-rose-400' },
+] as const
+
+const templates = [
+  { key: 'dark' as const, label: 'Dark', desc: 'Sleek dark mode' },
+  { key: 'minimal' as const, label: 'Minimal', desc: 'Clean & simple' },
+  { key: 'gradient' as const, label: 'Gradient', desc: 'Vibrant colors' },
+]
+
 export default function EditorPage() {
   const [title, setTitle] = useState('v1.2 — Dark mode & faster load')
   const [content, setContent] = useState(`## What's new
@@ -52,14 +109,35 @@ Mobile app is in closed beta. DM me if you want early access.`)
   const [template, setTemplate] = useState<'dark' | 'minimal' | 'gradient'>('dark')
   const [copied, setCopied] = useState(false)
   const [activeTab, setActiveTab] = useState<'preview' | 'x' | 'changelog'>('preview')
+  const [selectedChannels, setSelectedChannels] = useState<Set<string>>(new Set(['changelog', 'twitter']))
+  const [publishing, setPublishing] = useState(false)
+  const [published, setPublished] = useState(false)
 
   const xThread = generateXThread(content, title)
+
+  const toggleChannel = (key: string) => {
+    setSelectedChannels(prev => {
+      const next = new Set(prev)
+      if (next.has(key)) next.delete(key)
+      else next.add(key)
+      return next
+    })
+  }
 
   const copyXThread = useCallback(() => {
     navigator.clipboard.writeText(xThread.join('\n\n---\n\n'))
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
   }, [xThread])
+
+  const handlePublish = useCallback(() => {
+    setPublishing(true)
+    setTimeout(() => {
+      setPublishing(false)
+      setPublished(true)
+      setTimeout(() => setPublished(false), 3000)
+    }, 1200)
+  }, [])
 
   return (
     <main className="min-h-screen bg-neutral-950">
@@ -95,17 +173,55 @@ Mobile app is in closed beta. DM me if you want early access.`)
             <textarea value={content} onChange={(e) => setContent(e.target.value)} rows={18}
               className="w-full px-4 py-3 bg-neutral-900 border border-neutral-800 rounded-lg text-white focus:outline-none focus:border-sky-500/50 font-mono text-sm leading-relaxed resize-y" />
           </div>
+
+          {/* Channel Selection */}
           <div>
-            <label className="block text-sm font-medium text-neutral-400 mb-2">Changelog template</label>
-            <div className="flex gap-2">
-              {(['dark', 'minimal', 'gradient'] as const).map((t) => (
-                <button key={t} onClick={() => setTemplate(t)}
-                  className={`px-4 py-2 rounded-lg text-sm capitalize transition border ${
-                    template === t ? 'border-sky-500 bg-sky-500/10 text-sky-400' : 'border-neutral-800 text-neutral-400 hover:border-neutral-600'
-                  }`}>{t}</button>
+            <label className="block text-sm font-medium text-neutral-400 mb-2">Publish to</label>
+            <div className="flex flex-wrap gap-2">
+              {channels.map((ch) => (
+                <button key={ch.key} onClick={() => toggleChannel(ch.key)}
+                  className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm border transition ${
+                    selectedChannels.has(ch.key)
+                      ? 'border-sky-500/50 bg-sky-500/10 text-white'
+                      : 'border-neutral-800 text-neutral-500 hover:border-neutral-600 hover:text-neutral-300'
+                  }`}>
+                  {ch.icon}
+                  {ch.label}
+                </button>
               ))}
             </div>
           </div>
+
+          <div>
+            <label className="block text-sm font-medium text-neutral-400 mb-2">Changelog template</label>
+            <div className="flex gap-2">
+              {templates.map((t) => (
+                <button key={t.key} onClick={() => setTemplate(t.key)}
+                  className={`px-4 py-2 rounded-lg text-sm transition border text-left ${
+                    template === t.key ? 'border-sky-500 bg-sky-500/10 text-sky-400' : 'border-neutral-800 text-neutral-400 hover:border-neutral-600'
+                  }`}>
+                  <span className="block font-medium">{t.label}</span>
+                  <span className="text-xs opacity-60">{t.desc}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Publish Button */}
+          <button onClick={handlePublish} disabled={publishing || selectedChannels.size === 0}
+            className={`w-full inline-flex items-center justify-center gap-2 px-6 py-3 font-medium rounded-lg transition ${
+              publishing || selectedChannels.size === 0
+                ? 'bg-neutral-800 text-neutral-500 cursor-not-allowed'
+                : 'bg-sky-500 hover:bg-sky-400 text-white'
+            }`}>
+            {publishing ? (
+              <><span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Publishing...</>
+            ) : published ? (
+              <><Check className="w-4 h-4" /> Published!</>
+            ) : (
+              <><Send className="w-4 h-4" /> Publish to {selectedChannels.size} channel{selectedChannels.size !== 1 ? 's' : ''}</>
+            )}
+          </button>
         </div>
 
         <div className="space-y-4">
@@ -142,13 +258,13 @@ Mobile app is in closed beta. DM me if you want early access.`)
           )}
 
           {activeTab === 'changelog' && (
-            <div className={`rounded-xl overflow-hidden template-${template}`}>
-              <div className="px-6 py-4 border-b border-white/10 flex items-center justify-between">
+            <div className={`rounded-xl overflow-hidden ${template === 'dark' ? 'bg-neutral-900 border border-neutral-800 text-white' : template === 'minimal' ? 'bg-white text-neutral-900 border border-neutral-200' : 'bg-gradient-to-br from-sky-500/20 to-purple-500/20 border border-white/10 text-white'}`}>
+              <div className={`px-6 py-4 border-b flex items-center justify-between ${template === 'minimal' ? 'border-neutral-200' : 'border-white/10'}`}>
                 <h2 className="text-lg font-semibold">Changelog</h2>
                 <span className="text-xs opacity-60">{new Date().toLocaleDateString()}</span>
               </div>
               <div className="p-6 markdown-preview" dangerouslySetInnerHTML={{ __html: markdownToHtml(content) }} />
-              <div className="px-6 py-3 border-t border-white/10 text-xs opacity-40 text-center">
+              <div className={`px-6 py-3 border-t text-xs opacity-40 text-center ${template === 'minimal' ? 'border-neutral-200' : 'border-white/10'}`}>
                 Updates powered by IndieUpdates
               </div>
             </div>
