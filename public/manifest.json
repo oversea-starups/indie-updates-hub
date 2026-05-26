@@ -2,14 +2,14 @@
   "name": "Indie Updates Hub",
   "short_name": "IndieUpdates",
   "description": "Write once, publish everywhere. The update hub for indie makers.",
-  "start_url": "/indie-updates-hub/",
+  "start_url": "/",
   "display": "standalone",
   "background_color": "#0a0a0a",
   "theme_color": "#0ea5e9",
   "orientation": "portrait",
   "icons": [
     {
-      "src": "/indie-updates-hub/favicon.svg",
+      "src": "/favicon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any maskable"

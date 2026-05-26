@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://oversea-starups.github.io/indie-updates-hub/sitemap.xml
+Sitemap: https://indieupdates.com/sitemap.xml

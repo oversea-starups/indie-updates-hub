@@ -4,14 +4,14 @@ export const metadata = {
   keywords: ['indie maker', 'changelog', 'product updates', 'twitter threads', 'discord webhook', 'newsletter', 'AI writing', 'build in public', 'open startup'],
   authors: [{ name: 'Indie Updates Hub' }],
   creator: 'Indie Updates Hub',
-  metadataBase: new URL('https://oversea-starups.github.io'),
+  metadataBase: new URL('https://indieupdates.com'),
   alternates: {
-    canonical: '/indie-updates-hub',
+    canonical: '/',
   },
   openGraph: {
     title: 'Indie Updates Hub — Ship updates everywhere',
     description: 'Write once, publish everywhere. The AI-powered update hub for indie makers.',
-    url: 'https://oversea-starups.github.io/indie-updates-hub',
+    url: 'https://indieupdates.com',
     siteName: 'Indie Updates Hub',
     locale: 'en_US',
     type: 'website',
@@ -31,11 +31,11 @@ export const metadata = {
     },
   },
   icons: {
-    icon: '/indie-updates-hub/favicon.svg',
-    shortcut: '/indie-updates-hub/favicon.svg',
-    apple: '/indie-updates-hub/favicon.svg',
+    icon: '/favicon.svg',
+    shortcut: '/favicon.svg',
+    apple: '/favicon.svg',
   },
-  manifest: '/indie-updates-hub/manifest.json',
+  manifest: '/manifest.json',
   other: {
     'referrer': 'strict-origin-when-cross-origin',
     'theme-color': '#0ea5e9',
@@ -73,7 +73,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           }}
         />
         {/* Plausible Analytics — DSGVO-compliant, lightweight */}
-        <script defer data-domain="oversea-starups.github.io" data-api="/indie-updates-hub/api/event" src="https://plausible.io/js/script.js" />
+        <script defer data-domain="indieupdates.com" data-api="/api/event" src="https://plausible.io/js/script.js" />
       </head>
       <body className="min-h-screen antialiased">
         <ErrorBoundary>

@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { Zap, Share2, Layout, ArrowRight, Sparkles, Check, Mail, Twitter, Star, Quote } from 'lucide-react'
 import Link from 'next/link'
+import { WaitlistForm } from '@/components/waitlist-form'
 
 export default function Home() {
   const [email, setEmail] = useState('')
@@ -56,7 +57,7 @@ export default function Home() {
           X threads, Discord posts, and newsletter copy — all from one Markdown editor.
           Save 20 minutes per update.
         </p>
-        <div className="flex flex-wrap gap-4">
+        <div className="flex flex-wrap gap-4 mb-8">
           <Link href="/editor"
             className="inline-flex items-center gap-2 px-6 py-3 bg-sky-500 hover:bg-sky-400 text-white font-medium rounded-lg transition">
             Create your first update <ArrowRight className="w-4 h-4" />
@@ -66,6 +67,7 @@ export default function Home() {
             See how it works
           </a>
         </div>
+        <WaitlistForm cta="Want early access to paid features? Join the waitlist." />
 
         {/* Social Proof */}
         <div className="mt-12 flex items-center gap-4 text-sm text-neutral-500">
