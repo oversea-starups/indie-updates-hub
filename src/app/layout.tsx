@@ -1,17 +1,22 @@
+const isCustomDomain = process.env.CUSTOM_DOMAIN === 'true'
+const basePath = isCustomDomain ? '' : '/indie-updates-hub'
+const domain = isCustomDomain ? 'indieupdates.com' : 'oversea-starups.github.io'
+const canonicalPath = isCustomDomain ? '/' : '/indie-updates-hub'
+
 export const metadata = {
   title: 'Indie Updates Hub — Ship updates everywhere',
   description: 'Write once, publish everywhere. The AI-powered update hub for indie makers. Draft your product update once, then publish to your changelog, X/Twitter, Discord, and newsletter.',
   keywords: ['indie maker', 'changelog', 'product updates', 'twitter threads', 'discord webhook', 'newsletter', 'AI writing', 'build in public', 'open startup'],
   authors: [{ name: 'Indie Updates Hub' }],
   creator: 'Indie Updates Hub',
-  metadataBase: new URL('https://indieupdates.com'),
+  metadataBase: new URL(`https://${domain}`),
   alternates: {
-    canonical: '/',
+    canonical: canonicalPath,
   },
   openGraph: {
     title: 'Indie Updates Hub — Ship updates everywhere',
     description: 'Write once, publish everywhere. The AI-powered update hub for indie makers.',
-    url: 'https://indieupdates.com',
+    url: `https://${domain}${canonicalPath}`,
     siteName: 'Indie Updates Hub',
     locale: 'en_US',
     type: 'website',
@@ -31,11 +36,11 @@ export const metadata = {
     },
   },
   icons: {
-    icon: '/favicon.svg',
-    shortcut: '/favicon.svg',
-    apple: '/favicon.svg',
+    icon: `${basePath}/favicon.svg`,
+    shortcut: `${basePath}/favicon.svg`,
+    apple: `${basePath}/favicon.svg`,
   },
-  manifest: '/manifest.json',
+  manifest: `${basePath}/manifest.json`,
   other: {
     'referrer': 'strict-origin-when-cross-origin',
     'theme-color': '#0ea5e9',
@@ -72,8 +77,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             }),
           }}
         />
-        {/* Plausible Analytics — DSGVO-compliant, lightweight */}
-        <script defer data-domain="indieupdates.com" data-api="/api/event" src="https://plausible.io/js/script.js" />
+        <script defer data-domain={domain} data-api={`${basePath}/api/event`} src="https://plausible.io/js/script.js" />
       </head>
       <body className="min-h-screen antialiased">
         <ErrorBoundary>

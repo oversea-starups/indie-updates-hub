@@ -54,7 +54,7 @@ export default function SettingsPage() {
   }
 
   const copyEmbedCode = () => {
-    const code = `<iframe src="https://indieupdates.com/changelog" width="100%" height="600" frameborder="0"></iframe>`
+    const code = `<iframe src="https://oversea-starups.github.io/indie-updates-hub/changelog" width="100%" height="600" frameborder="0"></iframe>`
     navigator.clipboard.writeText(code)
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
@@ -132,7 +132,7 @@ export default function SettingsPage() {
             <p className="text-sm text-neutral-400 mb-3">Add this to your site to embed your changelog:</p>
             <div className="relative">
               <pre className="p-4 bg-neutral-950 rounded-lg text-xs text-neutral-400 overflow-x-auto font-mono border border-neutral-800">
-                {`<iframe src="https://indieupdates.com/changelog" width="100%" height="600" frameborder="0"></iframe>`}
+                {`<iframe src="https://oversea-starups.github.io/indie-updates-hub/changelog" width="100%" height="600" frameborder="0"></iframe>`}
               </pre>
               <button
                 onClick={copyEmbedCode}
