@@ -1,7 +1,7 @@
 export const metadata = {
   title: 'Indie Updates Hub — Ship updates everywhere',
-  description: 'Write once, publish everywhere. The update hub for indie makers. Draft your product update once, then publish to your changelog, X/Twitter, Discord, and newsletter.',
-  keywords: ['indie maker', 'changelog', 'product updates', 'twitter threads', 'discord webhook', 'newsletter'],
+  description: 'Write once, publish everywhere. The AI-powered update hub for indie makers. Draft your product update once, then publish to your changelog, X/Twitter, Discord, and newsletter.',
+  keywords: ['indie maker', 'changelog', 'product updates', 'twitter threads', 'discord webhook', 'newsletter', 'AI writing', 'build in public', 'open startup'],
   authors: [{ name: 'Indie Updates Hub' }],
   creator: 'Indie Updates Hub',
   metadataBase: new URL('https://oversea-starups.github.io'),
@@ -10,7 +10,7 @@ export const metadata = {
   },
   openGraph: {
     title: 'Indie Updates Hub — Ship updates everywhere',
-    description: 'Write once, publish everywhere. The update hub for indie makers.',
+    description: 'Write once, publish everywhere. The AI-powered update hub for indie makers.',
     url: 'https://oversea-starups.github.io/indie-updates-hub',
     siteName: 'Indie Updates Hub',
     locale: 'en_US',
@@ -19,7 +19,7 @@ export const metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Indie Updates Hub — Ship updates everywhere',
-    description: 'Write once, publish everywhere. The update hub for indie makers.',
+    description: 'Write once, publish everywhere. The AI-powered update hub for indie makers.',
     creator: '@indieupdateshub',
   },
   robots: {
@@ -35,16 +35,20 @@ export const metadata = {
     shortcut: '/indie-updates-hub/favicon.svg',
     apple: '/indie-updates-hub/favicon.svg',
   },
+  manifest: '/indie-updates-hub/manifest.json',
   other: {
     'referrer': 'strict-origin-when-cross-origin',
+    'theme-color': '#0ea5e9',
   },
 }
+
+import { ErrorBoundary } from '@/components/error-boundary'
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" dir="ltr">
       <head>
-        <meta httpEquiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self';" />
+        <meta httpEquiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://plausible.io; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' https://plausible.io; frame-ancestors 'none'; base-uri 'self'; form-action 'self';" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -52,7 +56,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               '@context': 'https://schema.org',
               '@type': 'SoftwareApplication',
               name: 'Indie Updates Hub',
-              description: 'Write once, publish everywhere. The update hub for indie makers.',
+              description: 'Write once, publish everywhere. The AI-powered update hub for indie makers.',
               applicationCategory: 'BusinessApplication',
               operatingSystem: 'Any',
               offers: {
@@ -68,8 +72,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             }),
           }}
         />
+        {/* Plausible Analytics — DSGVO-compliant, lightweight */}
+        <script defer data-domain="oversea-starups.github.io" data-api="/indie-updates-hub/api/event" src="https://plausible.io/js/script.js" />
       </head>
-      <body className="min-h-screen antialiased">{children}</body>
+      <body className="min-h-screen antialiased">
+        <ErrorBoundary>
+          {children}
+        </ErrorBoundary>
+      </body>
     </html>
   )
 }

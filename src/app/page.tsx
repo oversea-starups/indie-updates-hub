@@ -42,15 +42,19 @@ export default function Home() {
       {/* Hero */}
       <section className="max-w-5xl mx-auto px-6 pt-20 pb-16">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-500/10 border border-sky-500/20 text-sky-400 text-xs font-medium mb-6">
-          <Zap className="w-3 h-3" /> Now in beta — free while building
+          <Zap className="w-3 h-3" /> AI-powered — free while building
+        </div>
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-xs font-medium mb-6 ml-2">
+          <span className="text-xs">🤖</span> MCP-ready
         </div>
         <h1 className="text-4xl md:text-6xl font-bold text-white leading-tight mb-6">
           Write once.<br />
           <span className="text-sky-400">Ship everywhere.</span>
         </h1>
         <p className="text-lg text-neutral-400 max-w-xl mb-8">
-          The update hub for indie makers. Draft your product update once, then
-          publish to your changelog, X/Twitter, Discord, and newsletter — in one click.
+          The AI-powered update hub for indie makers. Draft once, then auto-generate
+          X threads, Discord posts, and newsletter copy — all from one Markdown editor.
+          Save 20 minutes per update.
         </p>
         <div className="flex flex-wrap gap-4">
           <Link href="/editor"
@@ -74,12 +78,17 @@ export default function Home() {
           </div>
           <p>Trusted by <span className="text-neutral-300 font-medium">127+</span> indie makers</p>
         </div>
+        <div className="mt-4 inline-flex items-center gap-2 text-xs text-neutral-600">
+          <span className="px-2 py-0.5 rounded bg-neutral-900 border border-neutral-800">Built with AI</span>
+          <span className="px-2 py-0.5 rounded bg-neutral-900 border border-neutral-800">Open Startup</span>
+          <span className="px-2 py-0.5 rounded bg-neutral-900 border border-neutral-800">Vibe Coding Friendly</span>
+        </div>
       </section>
 
       {/* Features */}
       <section id="how" className="max-w-5xl mx-auto px-6 py-20 border-t border-neutral-800">
         <h2 className="text-2xl font-bold text-white mb-4 text-center">From draft to everywhere</h2>
-        <p className="text-neutral-500 text-center mb-12 max-w-lg mx-auto">No more copy-pasting between platforms. Write once, let us handle the formatting.</p>
+        <p className="text-neutral-500 text-center mb-12 max-w-lg mx-auto">No more copy-pasting between platforms. In 2026, indie makers ship updates in 2 minutes — not 20. AI handles the formatting, you handle the product.</p>
         <div className="grid md:grid-cols-3 gap-8">
           <FeatureCard
             icon={<Layout className="w-6 h-6" />}
@@ -93,8 +102,8 @@ export default function Home() {
           />
           <FeatureCard
             icon={<Sparkles className="w-6 h-6" />}
-            title="Embeddable changelog"
-            desc="A beautiful changelog page you can embed on your site — with zero code."
+            title="AI thread writer"
+            desc="Auto-generate X threads from your update. Optimized for engagement, under 280 chars per tweet."
           />
         </div>
       </section>
